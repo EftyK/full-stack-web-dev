@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>My example app</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styling.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    </head>
+    <body>
+        <div class="header">
+            <h1>My example app</h1>
+            <button class="button button2" onclick="getLocation()">What's my location?</button>
+        
+            <button class="button button2" onclick="saveLocation()">Save location</button>
+        
+            <button class="button button2" onclick="showSavedLocations()">Load my saved locations</button>
+        </div>
+
+
+
+
+        <div class="row">
+        <div class="column side" style="background-color:#aaa;">
+            <h2>My current location</h2>
+            <p>This section will display the user's current location information.</p>
+            <p id="latitude"></p>
+            <p id="longitude"></p>
+            <p id="place"></p>
+        </div>
+        <div  id="map" class="column middle" style="background-color:#bbb; height: 300px;">
+            <h2>Map</h2>
+        </div>
+        <div class="column side" style="background-color:#ccc;">
+            <h2>Saved locations</h2>
+            <p>This section will display the user's saved locations.</p>
+        </div>
+        </div>
+
+
+    <div class="footer">
+        <p>Developed for educational purposes.</p>
+    </div>
+
+
+    <script>
+
+    const position = {  // const means that the object template cannot change, only the property values
+        longitude: null,
+        latitude: null
+    };
+
+    
+    var map = L.map('map').setView([0, 0], 1);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                // maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+
+    var marker;
+
+    function onMapClick(e) {
+        if (marker != null) {
+            marker.remove();
+        }
+        //console.log(e);
+        marker = L.marker(e.latlng).addTo(map);
+        position.latitude = e.latlng.lat;
+        position.longitude = e.latlng.lng;
+    }
+
+    map.on('click', onMapClick);
+
+
+    function showPosition(position) {
+        console.log(position);
+        var lat = document.getElementById("latitude");
+        var lon = document.getElementById("longitude");
+        lat.innerHTML = "Latitude: " + position.coords.latitude;
+        lon.innerHTML = "Longitude: " + position.coords.longitude;
+
+        showLocationOnMap(position.coords.latitude, position.coords.longitude);
+        // requestCoordinateTranslation(position.coords.latitude, position.coords.longitude);
+
+        position.longitude = position.coords.longitude;
+        position.latitude = position.coords.latitude;
+    }
+
+
+
+    function showLocationOnMap(latitude, longitude) {
+        map.setView([latitude, longitude], 18);
+        marker = L.marker([latitude, longitude]).addTo(map);
+    }
+
+
+    // function requestCoordinateTranslation(latitude, longitude) {
+    //     var domain = 'https://nominatim.openstreetmap.org/';
+    //     var operation = 'reverse.php';
+    //     var zoom = '18'; // building level
+    //     var format = 'json';
+    //     var url = domain + operation + "?" + "lat=" + latitude + "&lon=" + longitude + "&zoom=18&format=json";
+
+    //     var request = new XMLHttpRequest();
+    //     request.open('GET', url, true);
+
+    //     request.onload = function() {
+    //         if (request.status >= 200 && request.status < 400) {
+    //             // Success!
+    //             var data = JSON.parse(request.responseText);
+    //             console.log(data);
+    //             document.getElementById("place").innerHTML = data.display_name;
+    //             if (checkBox.checked == true) {
+    //                 var place = new SpeechSynthesisUtterance("You are at " + data.display_name);
+    //                 place.voice = speechSynthesis.speak(place);
+    //             }
+    //         } 
+    //     }
+    //     request.send();
+    // }
+
+    function saveLocation() {
+        localStorage.setItem("latitude", position.latitude);
+        localStorage.setItem("longitude", position.longitude);
+        alert("Marker location saved successfully");
+    }
+
+
+    function getLocation() {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    }
+
+    </script>       
+
+    </body>
+</html>
