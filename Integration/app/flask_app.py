@@ -32,7 +32,7 @@ def show_data():
 def save_entry():
     data = request.get_json()
     print(data)
-    # name = data.get('name')
+    name = data.get('name')
     latitude = data.get('latitude')
     longitude = data.get('longitude')
 
