@@ -12,29 +12,8 @@ import json
 app = Flask(__name__)
 
 
-# Configure SQLAlchemy to use an SQLite in-memory database
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///simple.db'
-# db = SQLAlchemy(app)
-
-
-# # Define your database model
-# class DatabaseModel(db.Model):
-#     __tablename__ = 'locations'
-#     id = db.Column(db.Integer, primary_key=True)
-    # name = db.Column(db.String(100))
-    # Add other columns as per your existing table structure
-
-
-
 # Route to display contents of the SQLite database
 @app.route('/show_data')
-# def show_data():
-#     # Fetch data from the database
-#     data = DatabaseModel.query.all()  # Retrieve all data from the table
-
-#     return render_template('show_data.html', data=data)
-
-# @app.route('/')
 def display_data():
     # Establish a connection to the database
     conn = sqlite3.connect('simple.db')
@@ -48,9 +27,6 @@ def display_data():
     conn.close()
 
     return render_template('show_data.html', data=data)
-
-# If you're not going to modify the schema, set this to False to suppress the warning
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 def randomPoint(): # create random point 0 - 100
@@ -67,7 +43,6 @@ def index():
 	dist = euclidean_distance(x1, y1, x2, y2)
 	return render_template("index.html", point1=(x1,y1), point2=(x2,y2), distance=dist)
 
-# app.run(host="0.0.0.0", port=5000)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
